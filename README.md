@@ -1,14 +1,19 @@
-# Project
+# Theme Tester
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+Test a theme on a set of input files without installing it.
 
-As the maintainer of this project, please make a few updates:
+Try it out in vscode.dev: https://vscode.dev/theme/aeschli.senja-dark
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+![screenshot](./screenshot.png)
+
+Also works in desktop or web:
+    Command: `Theme Tester: Preview Theme`
+
+
+> **Note**: 
+VS Code also has a built-in feature to try out themes:<br>
+Run `Preferences: Color Themes` and select `Browse Additional Color Themes...`
+  
 
 ## Contributing
 

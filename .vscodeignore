@@ -1,0 +1,15 @@
+.gitignore
+.vscode
+src/**
+build/**
+**/*.js.map
+dist/*.test.js
+azure-pipelines.yml
+tsconfig.json
+webpack.config.js
+yarn.lock
+yarn-error.log
+azure-pipelines.yml
+build-all.yml
+node_modules
+CONTRIBUTING.md
