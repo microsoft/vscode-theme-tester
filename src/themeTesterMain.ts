@@ -33,7 +33,9 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 }
 
-type InstallResult = { newThemSetting: string; keep: () => Promise<void>; undo: () => Promise<void> };
+type ThemeContribution = { id?: string; label: string };
+
+type InstallResult = { settingsId: string; keep: () => Promise<void>; undo: () => Promise<void> };
 
 async function handleUriLocation(location: string) {
 	try {
@@ -54,7 +56,7 @@ async function handleUriLocation(location: string) {
 		});
 		if (res) {
 			const buttons = ['Keep', 'Don\'t Keep'];
-			const action = await vscode.window.showInformationMessage(`Welcome! Here's a preview of the ${res.newThemSetting} theme in ${getProductName()}.`, ...buttons);
+			const action = await vscode.window.showInformationMessage(`Welcome! Here's a preview of the ${res.settingsId} theme in ${getProductName()}.`, ...buttons);
 			if (action === buttons[1]) {
 				await res.undo();
 			} else if (action === buttons[0]) {
@@ -68,7 +70,7 @@ async function handleUriLocation(location: string) {
 	}
 }
 
-function findBuiltInExtension(publisher: string, name: string, themeName: string | undefined): any | undefined {
+function findBuiltInExtension(publisher: string, name: string): any | undefined {
 	const extension = vscode.extensions.getExtension(`${publisher}.${name}`);
 	if (extension) {
 		return extension.packageJSON;
@@ -78,13 +80,13 @@ function findBuiltInExtension(publisher: string, name: string, themeName: string
 
 async function previewTheme(publisher: string, name: string, themeName: string): Promise<InstallResult | undefined> {
 
-	const manifest = findBuiltInExtension(publisher, name, themeName) || await findMarketPlaceExtension(publisher, name, themeName);
+	const manifest = findBuiltInExtension(publisher, name) || await findMarketPlaceExtension(publisher, name);
 	if (!manifest) {
-		vscode.window.showErrorMessage(`Unabel to find extension ${manifest.name} (${publisher}.${name}).`);
+		vscode.window.showErrorMessage(`Unable to find extension ${manifest.name} (${publisher}.${name}).`);
 		return undefined;
 	}
 
-	const themes: { label: string }[] = manifest.contributes?.themes;
+	const themes: ThemeContribution[] = manifest.contributes?.themes;
 	if (!Array.isArray(themes) || themes.length === 0) {
 		vscode.window.showErrorMessage(`Extension ${manifest.name} (${publisher}.${name}) does not contain any color themes.`);
 		return undefined;
@@ -100,45 +102,54 @@ async function previewTheme(publisher: string, name: string, themeName: string):
 			return undefined;
 		}
 	}
-	let themeToOpen = themes[0].label;
+	const getSettingsId = (theme: ThemeContribution) => theme.id || theme.label;
+
+	let settingsId: string | undefined = undefined;
 	if (themeName) {
 		themeName = themeName.toLowerCase();
 		for (const theme of themes) {
-			if (theme.label.toLowerCase() === themeName) {
-				themeToOpen = theme.label;
+			const currSettingsId = getSettingsId(theme);
+			if (currSettingsId.toLowerCase() === themeName) {
+				settingsId = currSettingsId;
 				break;
 			}
 		}
+		if (!settingsId) {
+			vscode.window.showErrorMessage(`Extension ${manifest.name} (${publisher}.${name}) does not contain a color theme ${themeName}.\nTry one of ${themes.map(getSettingsId).join(', ')} instead.`);
+			return undefined;
+		}
+	} else {
+		settingsId = getSettingsId(themes[0]);
 	}
-	if (!themeToOpen) {
+	if (!settingsId) {
 		return undefined;
 	}
 
-	openEditors(themeToOpen);
+	openEditors(settingsId);
 
 	const oldTheme = vscode.workspace.getConfiguration().inspect<string | undefined>('workbench.colorTheme')?.globalValue;
 	const version = manifest.version;
 
-	await vscode.commands.executeCommand('workbench.action.previewColorTheme', { publisher, name, version }, themeToOpen);
+	await vscode.commands.executeCommand('workbench.action.previewColorTheme', { publisher, name, version }, settingsId);
 
 	const undo = async () => {
-		await vscode.workspace.getConfiguration().update('workbench.colorTheme', themeToOpen, vscode.ConfigurationTarget.Global);
+		await vscode.workspace.getConfiguration().update('workbench.colorTheme', settingsId, vscode.ConfigurationTarget.Global);
 		await vscode.workspace.getConfiguration().update('workbench.colorTheme', oldTheme, vscode.ConfigurationTarget.Global);
 	};
 
 	const keep = async () => {
 		await vscode.commands.executeCommand('workbench.extensions.installExtension', `${publisher}.${name}`);
 
-		await vscode.workspace.getConfiguration().update('workbench.colorTheme', themeToOpen, vscode.ConfigurationTarget.Global);
+		await vscode.workspace.getConfiguration().update('workbench.colorTheme', settingsId, vscode.ConfigurationTarget.Global);
 	};
 
-	return { newThemSetting: themeToOpen, keep, undo };
+	return { settingsId, keep, undo };
 }
 
-async function findMarketPlaceExtension(publisher: string, name: string, themeName: string): Promise<any | undefined> {
+async function findMarketPlaceExtension(publisher: string, name: string): Promise<any | undefined> {
 	const version = await getLatestVersion(publisher, name);
 	if (version === undefined) {
-		vscode.window.showErrorMessage(`Unable to evaluate latest version of extension ${publisher}.${name}.`);
+		vscode.window.showErrorMessage(`Unable to find extension ${publisher}.${name} on the marketplace.`);
 		return undefined;
 	}
 
