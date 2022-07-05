@@ -80,7 +80,9 @@ function findBuiltInExtension(publisher: string, name: string): any | undefined 
 
 async function previewTheme(publisher: string, name: string, themeName: string): Promise<InstallResult | undefined> {
 
-	const manifest = findBuiltInExtension(publisher, name) || await findMarketPlaceExtension(publisher, name);
+	const builtInManifest = findBuiltInExtension(publisher, name);
+
+	const manifest = builtInManifest ?? await findMarketPlaceExtension(publisher, name);
 	if (!manifest) {
 		vscode.window.showErrorMessage(`Unable to find extension ${manifest.name} (${publisher}.${name}).`);
 		return undefined;
@@ -138,7 +140,9 @@ async function previewTheme(publisher: string, name: string, themeName: string):
 	};
 
 	const keep = async () => {
-		await vscode.commands.executeCommand('workbench.extensions.installExtension', `${publisher}.${name}`);
+		if (builtInManifest === undefined) {
+			await vscode.commands.executeCommand('workbench.extensions.installExtension', `${publisher}.${name}`);
+		}
 
 		await vscode.workspace.getConfiguration().update('workbench.colorTheme', settingsId, vscode.ConfigurationTarget.Global);
 	};
