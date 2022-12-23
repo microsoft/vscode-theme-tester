@@ -6,8 +6,8 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Run Web Extension ",
-			"type": "pwa-extensionHost",
+			"name": "Run Web Extension",
+			"type": "extensionHost",
 			"debugWebWorkerHost": true,
 			"request": "launch",
 			"args": [
