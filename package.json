@@ -48,7 +48,7 @@
 		"watch": "webpack --watch",
 		"package": "webpack --mode production --devtool hidden-source-map",
 		"lint": "eslint src --ext ts",
-		"chrome": "yarn compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --sourcesPath=../vscode --folder-uri=vscode-theme-tester://m/",
+		"chrome": "yarn compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --folder-uri=vscode-theme-tester://m/",
 		"serve": "yarn compile && serve --cors -l 5000"
 	},
 	"devDependencies": {
