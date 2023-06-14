@@ -2,9 +2,8 @@ name: $(Date:yyyyMMdd)$(Rev:.r)
 
 trigger:
   branches:
-    include: ["*"]
-  tags:
-    include: ["*"]
+    include:
+      - main
 pr: none
 
 resources:
@@ -19,7 +18,7 @@ parameters:
   - name: publishExtension
     displayName: � Publish Extension
     type: boolean
-    default: false      
+    default: false
 
 extends:
   template: azure-pipelines/extension/stable.yml@templates
@@ -33,4 +32,4 @@ extends:
         displayName: Static analysis
       - script: yarn package
         displayName: Compile extension
-    publishExtension: ${{ parameters.publishExtension }}          
+    publishExtension: ${{ parameters.publishExtension }}
