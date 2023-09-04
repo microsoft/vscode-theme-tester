@@ -55,13 +55,13 @@ async function handleUriLocation(location: string) {
 			return await previewTheme(publisher, extensionName, themeName);
 		});
 		if (res) {
-			const buttons = ['Keep', 'Don\'t Keep'];
+			const buttons = ['Install', 'Cancel'];
 			const action = await vscode.window.showInformationMessage(`Welcome! Here's a preview of the ${res.settingsId} theme in ${getProductName()}.`, ...buttons);
-			if (action === buttons[1]) {
-				await res.undo();
+			if (action === buttons[2]) {
+				await res.undo();			
 			} else if (action === buttons[0]) {
 				await res.keep();
-				await vscode.commands.executeCommand('vscode.newWindow', { reuseWindow: true });
+				await vscode.window.showInformationMessage(`The theme is now installed and configured in the user settings.`);
 			}
 		}
 
