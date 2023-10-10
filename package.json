@@ -2,7 +2,7 @@
 	"name": "theme-tester",
 	"displayName": "Theme Tester",
 	"description": "Test a color theme without installing it",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"publisher": "ms-vscode",
 	"license": "MIT",
 	"private": true,
