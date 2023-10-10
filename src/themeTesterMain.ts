@@ -29,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		handleUriLocation('/theme/' + location);
+		handleUriLocation('/editor/theme/' + location);
 	});
 }
 
@@ -39,7 +39,7 @@ type InstallResult = { settingsId: string; keep: () => Promise<void>; undo: () =
 
 async function handleUriLocation(location: string) {
 	try {
-		const match = /^\/(?:theme)\/(?<publisher>[^.]+)\.(?<extensionName>[^/]+)(\/(?<themeName>.*))?$/i.exec(location);
+		const match = /\/(?:theme)\/(?<publisher>[^.]+)\.(?<extensionName>[^/]+)(\/(?<themeName>.*))?$/i.exec(location);
 		const groups = match?.groups;
 		if (!groups) {
 			vscode.window.showErrorMessage('Invalid URL. Must be in the form \'/theme/publisher.name(/themeName)?\'');
