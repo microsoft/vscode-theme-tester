@@ -29,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		handleUriLocation('/theme/' + location);
+		handleUriLocation('/editor/theme/' + location);
 	});
 }
 
@@ -39,7 +39,7 @@ type InstallResult = { settingsId: string; keep: () => Promise<void>; undo: () =
 
 async function handleUriLocation(location: string) {
 	try {
-		const match = /^\/(?:theme)\/(?<publisher>[^.]+)\.(?<extensionName>[^/]+)(\/(?<themeName>.*))?$/i.exec(location);
+		const match = /\/(?:theme)\/(?<publisher>[^.]+)\.(?<extensionName>[^/]+)(\/(?<themeName>.*))?$/i.exec(location);
 		const groups = match?.groups;
 		if (!groups) {
 			vscode.window.showErrorMessage('Invalid URL. Must be in the form \'/theme/publisher.name(/themeName)?\'');
@@ -55,10 +55,12 @@ async function handleUriLocation(location: string) {
 			return await previewTheme(publisher, extensionName, themeName);
 		});
 		if (res) {
-			const buttons = ['Install', 'Cancel'];
+			const buttons = ['Install', 'Browse More...', 'Cancel'];
 			const action = await vscode.window.showInformationMessage(`Welcome! Here's a preview of the ${res.settingsId} theme in ${getProductName()}.`, ...buttons);
 			if (action === buttons[2]) {
-				await res.undo();			
+				await res.undo();
+			} else if (action === buttons[1]) {
+				vscode.commands.executeCommand('workbench.action.browseColorThemesInMarketplace');		
 			} else if (action === buttons[0]) {
 				await res.keep();
 				await vscode.window.showInformationMessage(`The theme is now installed and configured in the user settings.`);
