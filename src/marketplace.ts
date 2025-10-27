@@ -10,7 +10,6 @@ export async function getLatestVersion(publisher: string, name: string): Promise
             url: 'https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery',
             type: 'post',
             data: data,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { 'accept': 'application/json;api-version=3.0-preview.1', 'content-type': 'application/json', 'X-Market-Client-Id': 'vscode-marketplace-extension-browser' }
         });
         if (res.status === 200) {
@@ -48,7 +47,6 @@ export async function fetchPackageJSON(publisher: string, name: string, version:
 
     const url = getUnpkgURL(publisher, name, version, '/extension/package.json');
     const headers = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'X-Client-Name': `theme-tester`
     };
     const res = await xhr({ url, headers });

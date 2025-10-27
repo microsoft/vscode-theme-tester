@@ -26,11 +26,11 @@ extends:
     ghCreateRelease: true
     ghReleaseAddChangeLog: true
     buildSteps:
-      - script: yarn install --frozen-lockfile
+      - script: 
         displayName: Install dependencies
-      - script: yarn lint
+      - script: npm run lint
         displayName: Static analysis
-      - script: yarn package
+      - script: npm run package
         displayName: Compile extension
     tsa:
       config:
