@@ -46,26 +46,25 @@
 		"compile": "webpack",
 		"watch": "webpack --watch",
 		"package": "webpack --mode production --devtool hidden-source-map",
-		"lint": "eslint src --ext ts",
+		"lint": "eslint src/**/*.ts",
 		"chrome": "yarn compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --folder-uri=vscode-theme-tester://m/",
 		"serve": "yarn compile && serve --cors -l 5000"
 	},
 	"devDependencies": {
 		"@types/node": "18.x",
 		"@types/vscode": "^1.82.0",
-		"@types/webpack": "^5.28.3",
-		"@typescript-eslint/eslint-plugin": "^6.7.5",
-		"@typescript-eslint/experimental-utils": "^5.62.0",
-		"@typescript-eslint/parser": "^6.7.5",
-		"@vscode/test-web": "^0.0.46",
+		"@types/webpack": "^5.28.5",
+		"@typescript-eslint/eslint-plugin": "^8.44.1",
+		"@typescript-eslint/parser": "^8.44.1",
+		"@vscode/test-web": "^0.0.74",
 		"assert": "^2.1.0",
-		"eslint": "^8.51.0",
+		"eslint": "^9.36.0",
 		"process": "^0.11.10",
-		"request-light": "^0.7.0",
-		"ts-loader": "^9.5.0",
-		"typescript": "^5.2.2",
-		"webpack": "^5.94.0",
-		"webpack-cli": "^5.1.4",
-		"serve": "^14.2.1"
+		"request-light": "^0.8.0",
+		"ts-loader": "^9.5.4",
+		"typescript": "^5.9.3",
+		"webpack": "^5.102.1",
+		"webpack-cli": "^6.0.1",
+		"serve": "^14.2.5"
 	}
 }
